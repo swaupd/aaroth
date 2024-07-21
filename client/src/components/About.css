@@ -1,0 +1,155 @@
+
+/* src/components/About.css */
+
+.about-container {
+  padding: 20px;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+
+.product-image,
+.product-description {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.product-image img {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+
+.product-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.video-section {
+  text-align: center;
+}
+
+.video-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.video-title .line {
+  flex: 1;
+  height: 2px;
+  background-color: blue;
+  margin: 0 10px;
+  position: relative;
+}
+
+.video-title .line::before,
+.video-title .line::after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 2px;
+  background-color: blue;
+}
+
+.video-title .line::before {
+  left: 0;
+}
+
+.video-title .line::after {
+  right: 0;
+}
+
+.video-title h2 {
+  margin: 0;
+}
+
+.videos {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.videos iframe {
+  max-width: 100%;
+}
+/* src/components/About.css */
+
+.about-container {
+  padding: 20px;
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+
+.product-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product-description {
+  flex: 1;
+  margin-left: 20px;
+}
+
+.video-section {
+  text-align: center;
+}
+
+.video-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.video-title .line {
+  flex: 1;
+  height: 2px;
+  background-color: blue;
+  margin: 0 10px;
+  position: relative;
+}
+
+.video-title .line::before,
+.video-title .line::after {
+  content: "";
+  position: absolute;
+  width: 50%;
+  height: 2px;
+  background-color: blue;
+}
+
+.video-title .line::before {
+  left: 0;
+}
+
+.video-title .line::after {
+  right: 0;
+}
+
+.video-title h2 {
+  margin: 0;
+}
+
+.videos {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.videos iframe {
+  max-width: 100%;
+}
