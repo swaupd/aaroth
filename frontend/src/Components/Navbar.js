@@ -4,7 +4,7 @@ import "./NavbarStyles.css";
 import { MenuItems } from "./MenuItems";
 import { Link } from "react-router-dom";
 import LoginModal from "./LoginModal"; // Import the LoginModal component
-
+import logo from "../assets/logo.png";
 class Navbar extends Component {
   state = { clicked: false, isLoginModalOpen: false };
 
@@ -25,7 +25,7 @@ class Navbar extends Component {
     return (
       <>
         <nav className="NavbarItems">
-          <h1 className="navbar-logo">aaroth</h1>
+          <img src={logo} className="navbar-logo"/>
           <div className="menu-icons" onClick={this.handleclick}>
             <i
               className={this.state.clicked ? "fas fa-times" : "fas fa-bars"}
