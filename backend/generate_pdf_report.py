@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 def fetch_customer_data(phone_number):
     # Connect to MongoDB
-    client = MongoClient('localhost', 27017)
+    client = MongoClient('mongodb://Aaroth:aaroth123@docdb-2024-08-08-15-08-46.cjk4mgg8gxwz.ap-south-1.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&retryWrites=false')
     db = client['aarothdb']
     collection = db['customers']
 

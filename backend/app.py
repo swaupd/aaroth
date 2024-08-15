@@ -6,12 +6,16 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-
-app = Flask(__name__)
-CORS(app)
+from flask_cors import CORS
+from import_report import import_report
+app = Flask(__name__, static_folder="../build") 
+CORS(app, resources={r"/api/*": {"origins": "*"}})
+@app.route('/')
+def home():
+    return "Flask is running!"
 
 # MongoDB connection
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb://Aaroth:aaroth123@docdb-2024-08-08-15-08-46.cjk4mgg8gxwz.ap-south-1.docdb.amazonaws.com:27017/?tls=true&tlsCAFile=global-bundle.pem&retryWrites=false')
 db = client['aarothdb']
 customers_collection = db['customers']
 
@@ -43,16 +47,27 @@ def register_customer():
     # Check if the phone number already exists in the database
     if customers_collection.find_one({'Phone_Number': phone_number}):
         return jsonify({"message": "Phone number already associated with a customer"}), 400
-
-    new_customer = {
-        'UUID': generate_next_uuid(),
-        'Phone_Number': phone_number,
-        'Name': data.get('name'),
-        'DOB': data.get('dob'),
-        'Gender': data.get('gender'),
-        'Diet': data.get('diet'),
-        'Reports': []
-    }
+    if data.get('phoneType')=='True':
+        new_customer = {
+            'UUID': generate_next_uuid(),
+            'Phone_Number': phone_number,
+            'First_Name': data.get('firstName'),
+            'Middle_Name': data.get('middleName'),
+            'Last_Name': data.get('lastName'),
+            'DOB': data.get('dob'),
+            'Gender': data.get('gender'),
+            'Nationality': data.get('nationality'),
+            'Address': data.get('streetName')+' '+data.get('areaLocation'),
+            'City': data.get('city'),
+            'District': data.get('district'),
+            'State': data.get('state'),
+            'Diet': data.get('diet'),
+            'isMinor': data.get('phoneType'), 
+            'Parent/Guardian_First_Name': data.get('guardianFirstName'), 
+            'Parent/Guardian_Middle_Name': data.get('guardianMiddleName'), 
+            'Parent/Guardian_Last_Name': data.get('guardianLastName'), 
+            'Reports': []
+        }
 
     customers_collection.insert_one(new_customer)
     return jsonify({"message": "Customer registered successfully"})
@@ -183,5 +198,19 @@ def update_customer():
         return jsonify({"message": "Customer data updated successfully"})
     else:
         return jsonify({"message": "No fields to update"}), 400
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route('/import', methods=['POST'])
+def import_json_route():
+    if request.is_json:
+        try:
+            data = request.get_json()
+            import_report(data)
+            return jsonify({'message': 'Data processed successfully!'}), 200
+        except ValueError as ve:
+            return jsonify({'error': str(ve)}), 400
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid content type, expected application/json'}), 400
+
+    if __name__ == '__main__':
+        app.run(host='0.0.0.0', debug=True)
