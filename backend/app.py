@@ -8,6 +8,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 from flask_cors import CORS
 from import_report import import_report
+from datetime import datetime
+import json
+from io import BytesIO
 app = Flask(__name__, static_folder="../build") 
 CORS(app, resources={r"/api/*": {"origins": "*"}})
 @app.route('/')
@@ -38,7 +41,6 @@ def increment_uuid(uuid):
             uuid_chars[i] = chr(ord(uuid_chars[i]) + 1)
             break
     return ''.join(uuid_chars)
-
 @app.route('/register', methods=['POST'])
 def register_customer():
     data = request.json
@@ -68,10 +70,79 @@ def register_customer():
             'Parent/Guardian_Last_Name': data.get('guardianLastName'), 
             'Reports': []
         }
-
+    else:
+        new_customer = {
+            'UUID': generate_next_uuid(),
+            'Phone_Number': phone_number,
+            'First_Name': data.get('firstName'),
+            'Middle_Name': data.get('middleName'),
+            'Last_Name': data.get('lastName'),
+            'DOB': data.get('dob'),
+            'Gender': data.get('gender'),
+            'Nationality': data.get('nationality'),
+            'Address': data.get('streetName')+' '+data.get('areaLocation'),
+            'City': data.get('city'),
+            'District': data.get('district'),
+            'State': data.get('state'),
+            'Diet': data.get('diet'),
+            'isMinor': data.get('phoneType'), 
+            'Reports': []
+        }
     customers_collection.insert_one(new_customer)
     return jsonify({"message": "Customer registered successfully"})
+@app.route('/get-info', methods=['GET'])
+def get_customer_info():
+    try:
+        phone_number = request.args.get('phoneNumber')
 
+        # Find the customer by phone number
+        customer = customers_collection.find_one({'Phone_Number': phone_number})
+
+        if not customer:
+            return jsonify({"message": "Customer not found"}), 404
+
+        # Format the customer's name
+        full_name = f"{customer.get('First_Name', '')} {customer.get('Middle_Name', '')} {customer.get('Last_Name', '')}".strip()
+
+        # Retrieve DOB and handle empty or incorrectly formatted DOB
+        dob_str = customer.get('DOB')
+        if not dob_str:
+            age = "Unknown"  # Default value if DOB is missing
+        else:
+            try:
+                dob = datetime.strptime(dob_str, '%Y-%m-%d')  # Adjust this if the format is different
+                today = datetime.today()
+                age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            except ValueError:
+                age = "Invalid DOB format"  # Handle invalid date formats
+
+        # Prepare the data in the required format
+        customer_info = {
+            "UUID": customer.get('UUID', ''),
+            "Name": full_name,
+            "Age": age,
+            "Timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+        # Convert to JSON and prepare the file for download
+        json_data = json.dumps(customer_info, indent=4)
+        json_file = BytesIO(json_data.encode('utf-8'))
+        json_file.seek(0)
+
+        # Generate the filename with UUID and current timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"{customer_info['UUID']}_{timestamp}_info.json"
+
+        # Provide the file for download
+        return send_file(
+            json_file,
+            mimetype='application/json',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return jsonify({"message": "Internal server error"}), 500
 def create_pdf(customer_data):
     pdf_buffer = io.BytesIO()
     doc = SimpleDocTemplate(pdf_buffer, pagesize=letter)
@@ -81,10 +152,15 @@ def create_pdf(customer_data):
     # Add customer details
     customer_details = [
         ['Customer'],
-        ['Name', customer_data.get('Name', 'N/A')],
+        ['Name', ' '.join([
+            customer_data.get('First_Name', 'N/A'),
+            customer_data.get('Middle_Name', ''),
+            customer_data.get('Last_Name', 'N/A')
+        ])],
         ['DOB', str(customer_data.get('DOB', 'N/A'))],
         ['Gender', customer_data.get('Gender', 'N/A')],
     ]
+
     details_table = Table(customer_details)
     details_table.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.grey),

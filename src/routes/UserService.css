@@ -100,3 +100,17 @@
   max-width: 80%;
   margin-top: 20px;
 }
+.radio-group label {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.radio-group input[type="radio"]:checked + label {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+

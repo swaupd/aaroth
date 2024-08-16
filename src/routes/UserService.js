@@ -17,6 +17,7 @@ function UserService() {
     middleName: "",
     lastName: "",
     gender: "",
+    dob: "",
     motherTongue: "",
     nationality: "",
     diet: "",
@@ -234,6 +235,16 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               />
+	      <input
+		  className="input-field"
+		  type="date"
+		  placeholder="Date of Birth"
+		  name="dob"
+		  value={formData.dob}
+		  onChange={handleChange}
+		  required
+		/>
+
               <select
                 className="input-field"
                 name="gender"
@@ -241,7 +252,7 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               >
-                <option selected="true" disabled="disabled">
+                <option selected="true" value="" disabled="disabled">
                   Select Gender
                 </option>
                 <option value="Male">Male</option>
@@ -256,7 +267,7 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               >
-                <option selected="true" disabled="disabled">
+                <option selected="true" value="" disabled="disabled">
                   Select Mother Tongue
                 </option>
                 <option value="Hindi">Hindi</option>
@@ -282,7 +293,7 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               >
-                <option selected="true" disabled="disabled">
+                <option selected="true" value="" disabled="disabled">
                   Select Nationality
                 </option>
                 <option value="India">India</option>
@@ -309,7 +320,7 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               >
-                <option selected="true" disabled="disabled">
+                <option selected="true" value="" disabled="disabled">
                   Select Diet Preference
                 </option>
                 <option value="Vegetarian">Vegetarian</option>
@@ -358,12 +369,12 @@ const handleCustomerDataUpdate = async () => {
                 onChange={handleChange}
                 required
               />
-              <div className="phone-selection">
+              <div className="phone-selection radio-group">
                 <label>
                   <input
                     type="radio"
                     name="phoneType"
-                    value="Personal"
+                    value="False"
                     checked={formData.phoneType === "False"}
                     onChange={handleChange}
                   />
@@ -373,14 +384,14 @@ const handleCustomerDataUpdate = async () => {
                   <input
                     type="radio"
                     name="phoneType"
-                    value="Non-Personal"
+                    value="True"
                     checked={formData.phoneType === "True"}
                     onChange={handleChange}
                   />
                   Parent/Guardian's Phone Number
                 </label>
               </div>
-              {formData.phoneType === "Non-Personal" && (
+              {formData.phoneType === "True" && (
                 <>
                   <input
                     className="input-field"
