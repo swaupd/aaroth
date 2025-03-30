@@ -29,6 +29,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -357,5 +358,13 @@ private fun CustomerRegistrationContent() {
         }
 
         Spacer(modifier = Modifier.height(32.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ThisPreview() {
+    AarothTheme {
+        CustomerRegistrationContent()
     }
 }
