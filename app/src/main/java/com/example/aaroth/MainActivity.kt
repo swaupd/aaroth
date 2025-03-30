@@ -145,10 +145,4 @@ fun FeatureButton(feature: String, onFeatureClick: (String) -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AarothTheme {
-        HomePage()
-    }
-}
+
