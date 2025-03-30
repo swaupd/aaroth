@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.example.aaroth
+import android.content.Intent
 import androidx.compose.ui.res.painterResource
 import android.os.Bundle
 import android.widget.Toast
@@ -21,6 +22,7 @@ import androidx.compose.foundation.border
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.aaroth.ui.theme.AarothTheme
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
@@ -29,6 +31,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.clickable
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.rememberDatePickerState
@@ -38,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import java.time.Instant
 import java.time.LocalDate
@@ -125,6 +129,10 @@ private fun CustomerRegistrationContent() {
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .padding(start = 120.dp)
+                    .clickable {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    }
             )
 
             Text(
@@ -149,6 +157,7 @@ private fun CustomerRegistrationContent() {
                         .padding(4.dp)
                 )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.firstName,
                     onValueChange = { formData = formData.copy(firstName = it) },
                     modifier = Modifier
@@ -161,27 +170,58 @@ private fun CustomerRegistrationContent() {
 
                 )
 
+                Text(
+                    "Middle Name (if any):",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.middleName,
                     onValueChange = { formData = formData.copy(middleName = it) },
-                    label = { Text("Middle Name (if any)") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = formData.lastName,
-                    onValueChange = { formData = formData.copy(lastName = it) },
-                    label = { Text("Last Name") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                OutlinedTextField(
-                    value = formData.dob,
-                    onValueChange = { }, // Read-only
-                    label = { Text("Date of Birth") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { showDatePicker = true },
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
+                )
+
+                Text(
+                    "Last Name:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
+                OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 15.sp),
+                    value = formData.lastName,
+                    onValueChange = { formData = formData.copy(lastName = it) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
+                )
+                Text(
+                    "Date of Birth:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
+                OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
+                    value = formData.dob,
+                    onValueChange = { }, // Read-only
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showDatePicker = true }
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp)),
                     enabled = false
                 )
                 if (showDatePicker) {
@@ -223,19 +263,34 @@ private fun CustomerRegistrationContent() {
 
                 var genderExpanded by remember { mutableStateOf(false) }
                 val genderOptions = listOf("Male", "Female", "Other")
-
+                Text(
+                    "Gender:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 ExposedDropdownMenuBox(
                     expanded = genderExpanded,
                     onExpandedChange = { genderExpanded = it },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 ) {
+
                     OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 14.sp),
                         value = formData.gender,
                         onValueChange = {},
-                        label = { Text("Gender") },
                         readOnly = true,
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = genderExpanded) },
-                        modifier = Modifier.menuAnchor()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = genderExpanded) }
+
+
                     )
                     ExposedDropdownMenu(
                         expanded = genderExpanded,
@@ -253,68 +308,167 @@ private fun CustomerRegistrationContent() {
                     }
                 }
 
+                Text(
+                    "Mother Tongue:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.motherTongue,
                     onValueChange = { formData = formData.copy(motherTongue = it) },
-                    label = { Text("Mother Tongue") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "Preferred Language:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.preferredLanguage,
                     onValueChange = { formData = formData.copy(preferredLanguage = it) },
-                    label = { Text("Preferred Language") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "Nationality:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.nationality,
                     onValueChange = { formData = formData.copy(nationality = it) },
-                    label = { Text("Nationality") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "Diet Preference:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.diet,
                     onValueChange = { formData = formData.copy(diet = it) },
-                    label = { Text("Diet Preference") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
                 // Address Fields
+                Text(
+                    "Street Name:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.streetName,
                     onValueChange = { formData = formData.copy(streetName = it) },
-                    label = { Text("Street Name") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "Area Location:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.areaLocation,
                     onValueChange = { formData = formData.copy(areaLocation = it) },
-                    label = { Text("Area Location") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "City:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.city,
                     onValueChange = { formData = formData.copy(city = it) },
-                    label = { Text("City") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "District:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.district,
                     onValueChange = { formData = formData.copy(district = it) },
-                    label = { Text("District") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
+                Text(
+                    "State:",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                    )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.state,
                     onValueChange = { formData = formData.copy(state = it) },
-                    label = { Text("State") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                    .fillMaxWidth()
+                    .height(45.dp)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(Color(0x90D9D9D9))
+                    .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
                 // Phone Information
@@ -336,80 +490,128 @@ private fun CustomerRegistrationContent() {
                 }
 
                 if (formData.phoneType) {
+                    Text(
+                        "Guardian First Name:",
+                        color = Color(0x99000000),
+                        modifier = Modifier
+                            .padding(4.dp)
+                        )
                     OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 14.sp),
                         value = formData.guardianFirstName,
                         onValueChange = { formData = formData.copy(guardianFirstName = it) },
-                        label = { Text("Guardian First Name") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                     )
 
+                    Text(
+                        "Guardian Middle Name:",
+                        color = Color(0x99000000),
+                        modifier = Modifier
+                            .padding(4.dp)
+                        )
                     OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 14.sp),
                         value = formData.guardianMiddleName,
                         onValueChange = { formData = formData.copy(guardianMiddleName = it) },
-                        label = { Text("Guardian Middle Name") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                     )
 
+                    Text(
+                        "Guardian Last Name:",
+                        color = Color(0x99000000),
+                        modifier = Modifier
+                            .padding(4.dp)
+                        )
                     OutlinedTextField(
+                        textStyle = TextStyle(fontSize = 14.sp),
                         value = formData.guardianLastName,
                         onValueChange = { formData = formData.copy(guardianLastName = it) },
-                        label = { Text("Guardian Last Name") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                     )
                 }
 
+                Text(
+                    if (formData.phoneType) "Guardian's Phone Number" else "Personal Phone Number",
+                    color = Color(0x99000000),
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
                 OutlinedTextField(
+                    textStyle = TextStyle(fontSize = 14.sp),
                     value = formData.phoneNumber,
                     onValueChange = {
                         if (it.length <= 10 && it.all { char -> char.isDigit() }) {
                             formData = formData.copy(phoneNumber = it)
                         }
                     },
-                    label = { Text(if (formData.phoneType) "Guardian's Phone Number" else "Personal Phone Number") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp))
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
 
-                Button(
-                    onClick = {
-                        scope.launch {
-                            try {
-                                val response = apiService.registerCustomer(formData)
-                                if (response.isSuccessful) {
-                                    Toast.makeText(
-                                        context,
-                                        "Registration successful!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    context.finish()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Registration failed: ${
-                                            response.errorBody()?.string() ?: "Unknown error"
-                                        }",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            } catch (e: Exception) {
+
+
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            OutlinedButton(
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFFFF)),
+                border = BorderStroke(3.dp, Color.Black),
+                onClick = {
+                    scope.launch {
+                        try {
+                            val response = apiService.registerCustomer(formData)
+                            if (response.isSuccessful) {
                                 Toast.makeText(
                                     context,
-                                    "Error: ${e.message ?: "Unknown error"}",
+                                    "Registration successful!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                context.finish()
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Registration failed: ${
+                                        response.errorBody()?.string() ?: "Unknown error"
+                                    }",
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                "Error: ${e.message ?: "Unknown error"}",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                ) {
-                    Text("Submit")
-                }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Submit", color = Color.Black)
 
-                Spacer(modifier = Modifier.height(32.dp))
             }
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
