@@ -620,6 +620,6 @@ private fun CustomerRegistrationContent() {
 @Composable
 fun DefaultPreview() {
     AarothTheme {
-        CustomerRegistrationContent() // Enable preview mode
+        DownloadReportsScreen() // Enable preview mode
     }
 }

@@ -6,13 +6,26 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import android.content.Context
+import android.content.Intent
 import android.os.Environment
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -146,74 +159,133 @@ fun DownloadReportsScreen() {
 
     val viewModel = remember { DownloadReportViewModel() }
     val context = LocalContext.current
-
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .paint(
+                painterResource(id = R.drawable.bg),
+                contentScale = ContentScale.FillBounds
+            )
     ) {
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Phone Number") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
 
-        Button(
-            onClick = {
-                if (phoneNumber.isBlank()) {
-                    showError = true
-                    errorMessage = "Please enter a phone number"
-                    return@Button
-                }
-
-                isLoading = true
-                showError = false
-                filePath = null
-
-                viewModel.downloadReport(
-                    phoneNumber = phoneNumber,
-                    context = context,
-                    onSuccess = { path ->
-                        isLoading = false
-                        filePath = path
-                        Toast.makeText(context, "Report downloaded to Downloads folder", Toast.LENGTH_LONG).show()
-                    },
-                    onError = { error ->
-                        isLoading = false
-                        showError = true
-                        errorMessage = error
-                    }
-                )
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary
+
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .padding(start = 120.dp)
+                    .clickable {
+                        val intent = Intent(context, MainActivity::class.java)
+                        context.startActivity(intent)
+                    }
+            )
+
+            Text(
+                text = "Generate Customer Report",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(30.dp))
+                    .background(Color(0x99FFFFFF), shape = RoundedCornerShape(35.dp))
+                    .border(
+                        BorderStroke(3.dp, Color(0x40000000)),
+                        shape = RoundedCornerShape(35.dp)
+                    )
+                    .padding(20.dp),
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    "Customer Phone Number:",
+                    color = Color(0xFF000000),
+                    modifier = Modifier
+                        .padding(4.dp)
                 )
-            } else {
-                Text("Download Report")
+                OutlinedTextField(
+                    value = phoneNumber,
+                    onValueChange = { phoneNumber = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(Color(0x90D9D9D9))
+                        .border(BorderStroke(3.dp, Color(0x66000000)), shape = RoundedCornerShape(15.dp)),
+                    enabled = !isLoading
+                )
+
+            }
+            OutlinedButton(
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFFFFF)),
+                border = BorderStroke(3.dp, Color.Black),
+                onClick = {
+                    if (phoneNumber.isBlank()) {
+                        showError = true
+                        errorMessage = "Please enter a phone number"
+                        return@OutlinedButton
+                    }
+
+                    isLoading = true
+                    showError = false
+                    filePath = null
+
+                    viewModel.downloadReport(
+                        phoneNumber = phoneNumber,
+                        context = context,
+                        onSuccess = { path ->
+                            isLoading = false
+                            filePath = path
+                            Toast.makeText(
+                                context,
+                                "Report downloaded to Downloads folder",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        },
+                        onError = { error ->
+                            isLoading = false
+                            showError = true
+                            errorMessage = error
+                        }
+                    )
+                },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isLoading
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        color = Color.Black
+                    )
+                } else {
+                    Text("Download Report", color = Color.Black)
+                }
+            }
+
+            if (showError) {
+                Text(
+                    text = errorMessage,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+
+            filePath?.let { path ->
+                Text(
+                    text = "File saved to:\n$path",
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
 
-        if (showError) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
 
-        filePath?.let { path ->
-            Text(
-                text = "File saved to:\n$path",
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
     }
 }
