@@ -616,10 +616,3 @@ private fun CustomerRegistrationContent() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    AarothTheme {
-        DownloadReportsScreen() // Enable preview mode
-    }
-}

@@ -32,6 +32,7 @@
             android:name=".CustomerRegistration"
             android:exported="false" />
         <activity android:name=".DownloadReports" />
+        <activity android:name=".UserRegistration"/>
     </application>
 
 </manifest>
